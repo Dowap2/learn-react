@@ -10,6 +10,14 @@ type FormData = {
   bio?: string;
 };
 
+type FormErrors = {
+  name?: string;
+  email?: string;
+  age?: string;
+  gender?: string;
+  bio?: string;
+};
+
 const initialForm: FormData = {
   name: "",
   email: "",
@@ -19,19 +27,41 @@ const initialForm: FormData = {
 };
 
 function Form() {
-  const [errors, setErrors] = useState<{ [key: string]: string }>({});
-
   const [form, setForm] = useState<FormData>(initialForm);
+  const [errors, setErrors] = useState<FormErrors>({});
+  const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
-  const validate = (): boolean => {
-    const newErrors: { [key: string]: string } = {};
-    if (!form.name.trim()) newErrors.name = "이름은 필수입니다.";
-    if (!form.email.trim()) newErrors.email = "이메일은 필수입니다.";
-    if (Number(form.age) === 0) newErrors.age = "나이는 필수입니다.";
-    if (!form.gender.trim()) newErrors.gender = "성별은 필수입니다.";
+  const validateField = (
+    name: keyof FormData,
+    value: any
+  ): string | undefined => {
+    switch (name) {
+      case "name":
+        return value.trim() ? undefined : "이름은 필수입니다.";
+      case "email":
+        console.log(value);
+        if (!value.trim()) {
+          return "이메일은 필수입니다.";
+        } else if (!emailRegex.test(value)) {
+          return "올바른 형식의 이메일을 입력해주세요";
+        } else {
+          return undefined;
+        }
+      case "age":
+        return Number(value) > 0 ? undefined : "1 이상의 숫자를 입력해주세요";
+      case "gender":
+        return value ? undefined : "성별은 필수입니다.";
+      default:
+        return undefined;
+    }
+  };
 
-    console.log(form, newErrors, form.age);
-
+  const validateAll = (): boolean => {
+    const newErrors: FormErrors = {};
+    (Object.keys(form) as (keyof FormData)[]).forEach((key) => {
+      const error = validateField(key, form[key]);
+      if (error) newErrors[key] = error;
+    });
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -40,57 +70,81 @@ function Form() {
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
     const { name, value } = e.target;
-    setForm((prev) => ({ ...prev, [name]: value }));
+    const parsedValue = name === "age" ? Number(value) : value;
+
+    setForm((prev) => ({
+      ...prev,
+      [name]: parsedValue,
+    }));
   };
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleBlur = (
+    e: React.FocusEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
+    const error = validateField(name as keyof FormData, value);
+    setErrors((prev) => ({
+      ...prev,
+      [name]: error,
+    }));
+  };
 
-    if (validate()) {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (validateAll()) {
+      alert("폼 제출 완료!");
       setForm(initialForm);
-      return "success";
+      setErrors({});
     }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label htmlFor="name">name</label>
+        <label htmlFor="name">이름</label>
         <input
           type="text"
-          value={form.name}
           name="name"
+          value={form.name}
           onChange={handleChange}
+          onBlur={handleBlur}
         />
         {errors.name && <div style={{ color: "red" }}>{errors.name}</div>}
       </div>
 
       <div>
-        <label htmlFor="name">email</label>
+        <label htmlFor="email">이메일</label>
         <input
-          type="email"
-          value={form.email}
+          type="text"
           name="email"
+          value={form.email}
           onChange={handleChange}
+          onBlur={handleBlur}
         />
         {errors.email && <div style={{ color: "red" }}>{errors.email}</div>}
       </div>
 
       <div>
-        <label htmlFor="name">age</label>
+        <label htmlFor="age">나이</label>
         <input
           type="number"
           name="age"
           value={form.age}
           onChange={handleChange}
+          onBlur={handleBlur}
           min={0}
         />
         {errors.age && <div style={{ color: "red" }}>{errors.age}</div>}
       </div>
 
       <div>
-        <label htmlFor="name">gender</label>
-        <select name="gender" value={form.gender} onChange={handleChange}>
+        <label htmlFor="gender">성별</label>
+        <select
+          name="gender"
+          value={form.gender}
+          onChange={handleChange}
+          onBlur={handleBlur}
+        >
           <option value="" disabled>
             성별 선택
           </option>
@@ -101,12 +155,13 @@ function Form() {
       </div>
 
       <div>
-        <label htmlFor="name">bio</label>
+        <label htmlFor="bio">자기소개 (선택)</label>
         <input
           type="text"
           name="bio"
           value={form.bio}
           onChange={handleChange}
+          onBlur={handleBlur}
         />
       </div>
 
