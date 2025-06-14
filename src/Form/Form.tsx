@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useAppContext } from "../AppContext";
 
 type Gender = "" | "남성" | "여성";
 
@@ -29,6 +30,7 @@ const initialForm: FormData = {
 function Form() {
   const [form, setForm] = useState<FormData>(initialForm);
   const [errors, setErrors] = useState<FormErrors>({});
+  const { addUser } = useAppContext();
   const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
   const validateField = (
@@ -93,6 +95,7 @@ function Form() {
     e.preventDefault();
     if (validateAll()) {
       alert("폼 제출 완료!");
+      addUser(form);
       setForm(initialForm);
       setErrors({});
     }
