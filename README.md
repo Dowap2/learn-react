@@ -10,13 +10,13 @@ React 학습을 위한 폼, 상태, validation, context, react-query 등 핵심 
 
 ### 📌 필드
 
-| 필드명 | 타입   | 설명        |
-| ------ | ------ | ----------- | -------- | ------- |
-| name   | string | 사용자 이름 |
-| email  | string | 이메일 주소 |
-| age    | number | 나이        |
-| gender | string | 'male'      | 'female' | 'other' |
-| bio    | string | 자기소개    |
+| 필드명 | 타입   | 설명                              |
+| ------ | ------ | --------------------------------- |
+| name   | string | 사용자 이름                       |
+| email  | string | 이메일 주소                       |
+| age    | number | 나이                              |
+| gender | string | 'male', 'female', 'other' 중 하나 |
+| bio    | string | 자기소개                          |
 
 ### 💡 Test API
 
