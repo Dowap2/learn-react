@@ -1,174 +1,70 @@
-# React 학습용 프로젝트 요구사항 상세 정리
+# Getting Started with Create React App
 
-## 🔧 프로젝트 개요: 유저 등록 및 관리 앱
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
-React 학습을 위한 폼, 상태, validation, context, react-query 등 핵심 개념을 다룬 실습용 요구사항입니다.
+## Available Scripts
 
----
+In the project directory, you can run:
 
-## ✅ 요구사항 1: 유저 등록 폼 만들기 (Form + Controlled)
+### `npm start`
 
-### 📌 필드
+Runs the app in the development mode.\
+Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
 
-| 필드명 | 타입   | 설명                              |
-| ------ | ------ | --------------------------------- |
-| name   | string | 사용자 이름                       |
-| email  | string | 이메일 주소                       |
-| age    | number | 나이                              |
-| gender | string | 'male', 'female', 'other' 중 하나 |
-| bio    | string | 자기소개                          |
+The page will reload when you make changes.\
+You may also see any lint errors in the console.
 
-### 💡 Test API
+### `npm test`
 
-- 없음 (로컬 상태로 처리)
+Launches the test runner in the interactive watch mode.\
+See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### 🧪 Validation Rule
+### `npm run build`
 
-- name: 필수
-- email: 필수, 이메일 형식 (`@` 포함)
-- age: 필수, 1 이상 숫자
-- gender: 필수
-- bio: 선택
+Builds the app for production to the `build` folder.\
+It correctly bundles React in production mode and optimizes the build for the best performance.
 
-### 👤 사용자 시나리오
+The build is minified and the filenames include the hashes.\
+Your app is ready to be deployed!
 
-1. 유저가 폼을 입력하고 제출한다.
-2. 각 필드는 실시간으로 입력값을 상태로 반영한다.
-3. 제출 시 validation 실패하면 해당 필드에 메시지가 표시된다.
-4. 성공 시 입력값은 초기화되고 유저 리스트에 추가된다.
+See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
 
----
+### `npm run eject`
 
-## ✅ 요구사항 2: 입력 유효성 검사 (Validation)
+**Note: this is a one-way operation. Once you `eject`, you can't go back!**
 
-### 🔧 유효성 방식
+If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
 
-- 실시간: `onBlur`, `onChange`로 체크
-- 제출 시: `onSubmit` 시 모든 필드 재검사
+Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
 
-### 🚫 에러 예시
+You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-- 이름: "이름을 입력해주세요."
-- 이메일: "올바른 이메일 형식이 아닙니다."
-- 나이: "1 이상의 숫자를 입력해주세요."
+## Learn More
 
----
+You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
 
-## ✅ 요구사항 3: 유저 리스트 상태 관리
+To learn React, check out the [React documentation](https://reactjs.org/).
 
-### 📌 동작
+### Code Splitting
 
-- 등록된 유저는 배열 형태로 저장됨
+This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
 
-```ts
-type User = {
-  id: number;
-  name: string;
-  email: string;
-  age: number;
-  gender: string;
-  bio: string;
-};
-```
+### Analyzing the Bundle Size
 
-### 👤 사용자 시나리오
+This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
 
-1. 폼 제출 후 리스트에 등록됨
-2. 여러 명을 연속 등록 가능
-3. 리스트는 실시간으로 반영됨
+### Making a Progressive Web App
 
----
+This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
 
-## ✅ 요구사항 4: Uncontrolled Component 사용
+### Advanced Configuration
 
-### 📌 대상 필드: `bio` (자기소개)
+This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
 
-- `textarea`를 `useRef`로 제어
-- 등록 시 `ref.current.value`로 읽기
+### Deployment
 
----
+This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
 
-## ✅ 요구사항 5: 등록 후 포커싱 (useEffect + ref)
+### `npm run build` fails to minify
 
-### 👤 사용자 시나리오
-
-1. 유저 등록 시 bio를 제외한 필드 초기화
-2. 이름 input으로 자동 포커싱
-
----
-
-## ✅ 요구사항 6: 로컬 스토리지 연동 (useEffect)
-
-### 📌 키: `"userList"`
-
-### 👤 사용자 시나리오
-
-1. 앱이 처음 로드되면 `localStorage.getItem`으로 리스트 복구
-2. 유저를 추가/삭제하면 `localStorage.setItem`으로 업데이트
-
----
-
-## ✅ 요구사항 7: Context로 전역 상태 공유
-
-### 📦 UserContext 구조
-
-```ts
-const UserContext = createContext<{
-  users: User[];
-  addUser: (user: User) => void;
-  deleteUser: (id: number) => void;
-} | null>(null);
-```
-
----
-
-## ✅ 요구사항 8: 서버에서 유저 불러오기 (react-query)
-
-### 🌐 Test API
-
-```http
-GET https://jsonplaceholder.typicode.com/users
-```
-
-### 📌 필요한 필드 가공
-
-```ts
-{
-  id,
-  name,
-  email,
-  gender: 'other',
-  age: Math.floor(Math.random() * 40 + 20),
-  bio: 'Fetched user'
-}
-```
-
----
-
-## ✅ 요구사항 9: 유저 삭제 기능 (useMutation)
-
-### 🌐 Mock API (JSONPlaceholder 기준)
-
-```http
-DELETE https://jsonplaceholder.typicode.com/users/:id
-```
-
----
-
-## ✅ 요구사항 10: 검색/필터링 기능 (state + useMemo)
-
-### 👤 사용자 시나리오
-
-1. 상단 검색창에 키워드 입력
-2. 이름 기준으로 실시간 필터링
-3. useMemo로 성능 최적화
-
----
-
-## 💡 추가 아이디어
-
-| 아이디어      | 기술 포인트                 |
-| ------------- | --------------------------- |
-| 다크모드 토글 | Context + CSS 변수          |
-| react-router  | 등록/목록/상세 페이지 분리  |
-| toast 알림    | 등록/삭제 성공 시 알림 표시 |
+This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
