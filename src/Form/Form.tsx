@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useAppContext } from "../AppContext";
 
 type Gender = "" | "남성" | "여성";
@@ -8,7 +8,6 @@ type FormData = {
   email: string;
   age: number;
   gender: Gender;
-  bio?: string;
 };
 
 type FormErrors = {
@@ -16,7 +15,6 @@ type FormErrors = {
   email?: string;
   age?: string;
   gender?: string;
-  bio?: string;
 };
 
 const initialForm: FormData = {
@@ -24,7 +22,6 @@ const initialForm: FormData = {
   email: "",
   age: 0,
   gender: "",
-  bio: "",
 };
 
 function Form() {
@@ -32,6 +29,7 @@ function Form() {
   const [errors, setErrors] = useState<FormErrors>({});
   const { addUser } = useAppContext();
   const emailRegex: RegExp = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  const bioRef = useRef<HTMLTextAreaElement>(null);
 
   const validateField = (
     name: keyof FormData,
@@ -41,7 +39,6 @@ function Form() {
       case "name":
         return value.trim() ? undefined : "이름은 필수입니다.";
       case "email":
-        console.log(value);
         if (!value.trim()) {
           return "이메일은 필수입니다.";
         } else if (!emailRegex.test(value)) {
@@ -95,7 +92,16 @@ function Form() {
     e.preventDefault();
     if (validateAll()) {
       alert("폼 제출 완료!");
-      addUser(form);
+      const bioValue: string | undefined = bioRef.current?.value;
+
+      addUser({
+        ...form,
+        bio: bioValue,
+      });
+
+      if (bioRef.current) {
+        bioRef.current.value = "";
+      }
       setForm(initialForm);
       setErrors({});
     }
@@ -159,13 +165,7 @@ function Form() {
 
       <div>
         <label htmlFor="bio">자기소개 (선택)</label>
-        <input
-          type="text"
-          name="bio"
-          value={form.bio}
-          onChange={handleChange}
-          onBlur={handleBlur}
-        />
+        <textarea name="bio" ref={bioRef} />
       </div>
 
       <button type="submit">제출</button>

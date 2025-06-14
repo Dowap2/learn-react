@@ -5,7 +5,12 @@ function UserList() {
   return (
     <div>
       {userList.map((user) => {
-        return <li>{user.name}</li>;
+        return (
+          <li>
+            <div>{user.name}</div>
+            <div>{user.bio}</div>
+          </li>
+        );
       })}
     </div>
   );
