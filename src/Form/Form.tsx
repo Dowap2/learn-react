@@ -1,32 +1,39 @@
 import { useState } from "react";
 
+type Gender = "" | "남성" | "여성";
+
+type FormData = {
+  name: string;
+  email: string;
+  age: number;
+  gender: Gender;
+  bio?: string;
+};
+
+const initialForm: FormData = {
+  name: "",
+  email: "",
+  age: 0,
+  gender: "",
+  bio: "",
+};
+
 function Form() {
-  type FormData = {
-    name: string;
-    email: string;
-    age: number;
-    gender: "남성" | "여성" | "";
-    bio?: string;
-  };
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
 
-  const [form, setForm] = useState<FormData>({
-    name: "",
-    email: "",
-    age: 0,
-    gender: "",
-    bio: "",
-  });
+  const [form, setForm] = useState<FormData>(initialForm);
 
   const validate = (): boolean => {
     const newErrors: { [key: string]: string } = {};
     if (!form.name.trim()) newErrors.name = "이름은 필수입니다.";
     if (!form.email.trim()) newErrors.email = "이메일은 필수입니다.";
-    if (form.age === 0) newErrors.age = "나이는 필수입니다.";
+    if (Number(form.age) === 0) newErrors.age = "나이는 필수입니다.";
     if (!form.gender.trim()) newErrors.gender = "성별은 필수입니다.";
 
+    console.log(form, newErrors, form.age);
+
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // 에러 없으면 true
+    return Object.keys(newErrors).length === 0;
   };
 
   const handleChange = (
@@ -40,6 +47,7 @@ function Form() {
     e.preventDefault();
 
     if (validate()) {
+      setForm(initialForm);
       return "success";
     }
   };
@@ -75,6 +83,7 @@ function Form() {
           name="age"
           value={form.age}
           onChange={handleChange}
+          min={0}
         />
         {errors.age && <div style={{ color: "red" }}>{errors.age}</div>}
       </div>
